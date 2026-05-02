@@ -1,0 +1,10 @@
+{
+  "name": "SD 美食地图",
+  "short_name": "SD地图",
+  "description": "San Diego 餐厅收藏地图",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "lang": "zh-CN"
+}

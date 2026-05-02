@@ -1,0 +1,13 @@
+{
+  "places": [
+    {
+      "id": "example-1",
+      "title": "示例：某篇攻略标题",
+      "url": "https://www.xiaohongshu.com/explore/xxxxxxxx",
+      "query": "Convoy Street Korean food San Diego",
+      "lat": 32.8242,
+      "lng": -117.1573,
+      "cover": ""
+    }
+  ]
+}

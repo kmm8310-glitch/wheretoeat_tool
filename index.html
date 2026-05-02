@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>San Diego 收藏地图</title>
+    <link rel="manifest" href="manifest.json" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="toolbar">
+      <h1>San Diego 美食地图</h1>
+      <p id="load-status">正在加载…</p>
+      <button type="button" id="btn-locate" class="btn-primary">定位到我</button>
+      <details id="help-details" class="help-details">
+        <summary>iPhone / 离线 / 部署说明</summary>
+        <div class="help-body">
+          <p>
+            <strong>推荐</strong>：把整个文件夹放到
+            <strong>GitHub Pages / Cloudflare Pages / Netlify</strong>（免费、HTTPS），手机 Safari
+            打开网址即可；定位与 Yelp 外链需要能上网。
+          </p>
+          <p>
+            <strong>内网电脑 + 手机</strong>：电脑在项目目录运行
+            <code>python3 -m http.server 8765</code>，手机连同一 Wi‑Fi，浏览器打开
+            <code>http://电脑IP:8765</code>（不要用仅 file:// 打开，地图数据可能加载失败）。
+          </p>
+          <p>
+            <strong>离线数据</strong>：修改 <code>data/places.json</code> 后在本机执行
+            <code>python3 scripts/embed_places.py</code> 更新
+            <code>embedded-places.js</code>；当无法读取 json 时会自动用内嵌数据。
+          </p>
+          <p>
+            <strong>纯原生 iOS App</strong>：本仓库是网页，若要 App Store 离线包需用 Xcode +
+            WKWebView（如 Capacitor）自行打包，成本较高。
+          </p>
+        </div>
+      </details>
+    </div>
+    <div id="map"></div>
+    <script src="embedded-places.js"></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="app.js"></script>
+  </body>
+</html>
