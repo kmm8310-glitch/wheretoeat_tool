@@ -126,9 +126,39 @@ body {
   background: #eee;
 }
 
+.popup-nav {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.popup-nav-label {
+  font-weight: 600;
+  color: #333;
+  margin-right: 4px;
+}
+
+.popup-nav-link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.popup-nav-link:hover {
+  text-decoration: underline;
+}
+
+.popup-nav-sep {
+  color: #aaa;
+}
+
+.popup-link-row {
+  margin-top: 8px;
+}
+
 .popup-link {
   display: inline-block;
-  margin-top: 6px;
   color: #d32323;
   text-decoration: none;
   font-size: 13px;

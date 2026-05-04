@@ -21,10 +21,10 @@
     return div.innerHTML;
   }
 
-  function yelpSearchUrl(findDesc) {
+  function yelpSearchUrl(findDesc, findLoc) {
     const p = new URLSearchParams();
     p.set("find_desc", findDesc);
-    p.set("find_loc", "San Diego, CA");
+    p.set("find_loc", (findLoc && String(findLoc).trim()) || "San Diego, CA");
     return "https://www.yelp.com/search?" + p.toString();
   }
 
@@ -39,7 +39,8 @@
     if (idx >= 0) q = q.slice(0, idx).trim();
     q = q.replace(/\s+/g, " ").slice(0, 120);
     if (!q) return "";
-    return yelpSearchUrl(q);
+    const loc = (place.yelp_loc || "").trim() || "San Diego, CA";
+    return yelpSearchUrl(q, loc);
   }
 
   function linkLabelForUrl(url) {
@@ -50,10 +51,38 @@
     return "打开链接";
   }
 
+  function navigationLinksHtml(place, lat, lng) {
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return "";
+    const label = encodeURIComponent(
+      (place.title || place.query || "目的地").slice(0, 120)
+    );
+    const apple = `https://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+    const google = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+    const gName = `https://www.google.com/maps/dir/?api=1&destination=${label}&travelmode=driving`;
+    return (
+      `<div class="popup-nav">` +
+      `<span class="popup-nav-label">导航</span> ` +
+      `<a class="popup-nav-link" href="${escapeHtml(
+        apple
+      )}" target="_blank" rel="noopener noreferrer">Apple 地图</a>` +
+      `<span class="popup-nav-sep"> · </span>` +
+      `<a class="popup-nav-link" href="${escapeHtml(
+        google
+      )}" target="_blank" rel="noopener noreferrer">Google 地图</a>` +
+      `<span class="popup-nav-sep"> · </span>` +
+      `<a class="popup-nav-link" href="${escapeHtml(
+        gName
+      )}" target="_blank" rel="noopener noreferrer">按名称</a>` +
+      `</div>`
+    );
+  }
+
   function popupHtml(place) {
     const title = escapeHtml(place.title || "未命名");
     const url = resolvePlaceUrl(place);
     const query = place.query ? escapeHtml(place.query) : "";
+    const lat = Number(place.lat);
+    const lng = Number(place.lng);
     const cover =
       place.cover && String(place.cover).trim()
         ? `<img class="popup-cover" src="${escapeHtml(
@@ -69,11 +98,14 @@
         linkLabelForUrl(url)
       )}</a>`;
 
+    const nav = navigationLinksHtml(place, lat, lng);
+
     return (
       `${cover}` +
       `<div class="popup-title">${title}</div>` +
       (query ? `<div class="popup-meta">${query}</div>` : "") +
-      (link || "")
+      nav +
+      (link ? `<div class="popup-link-row">${link}</div>` : "")
     );
   }
 
