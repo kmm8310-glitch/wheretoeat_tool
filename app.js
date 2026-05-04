@@ -25,6 +25,10 @@
     return `https://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
   }
 
+  function googleDirectionsUrl(lat, lng) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+  }
+
   function yelpSearchUrl(findDesc, findLoc) {
     const p = new URLSearchParams();
     p.set("find_desc", findDesc);
@@ -62,7 +66,7 @@
       (place.title || place.query || "目的地").slice(0, 120)
     );
     const apple = appleDirectionsUrl(lat, lng);
-    const google = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+    const google = googleDirectionsUrl(lat, lng);
     const gName = `https://www.google.com/maps/dir/?api=1&destination=${label}&travelmode=driving`;
     return (
       `<div class="popup-nav">` +
@@ -123,6 +127,57 @@
     );
   }
 
+  function openNavPicker(lat, lng) {
+    const root = document.getElementById("nav-picker");
+    if (!root) return;
+    root.dataset.lat = String(lat);
+    root.dataset.lng = String(lng);
+    root.classList.remove("hidden");
+    root.setAttribute("aria-hidden", "false");
+  }
+
+  function closeNavPicker() {
+    const root = document.getElementById("nav-picker");
+    if (!root) return;
+    root.classList.add("hidden");
+    root.setAttribute("aria-hidden", "true");
+    delete root.dataset.lat;
+    delete root.dataset.lng;
+  }
+
+  function wireNavPicker() {
+    const root = document.getElementById("nav-picker");
+    if (!root) return;
+    const appleBtn = document.getElementById("nav-picker-apple");
+    const googleBtn = document.getElementById("nav-picker-google");
+    const cancelBtn = document.getElementById("nav-picker-cancel");
+    const backdrop = root.querySelector(".nav-picker-backdrop");
+    function openChosen(buildUrl) {
+      const la = parseFloat(root.dataset.lat || "", 10);
+      const ln = parseFloat(root.dataset.lng || "", 10);
+      if (Number.isFinite(la) && Number.isFinite(ln)) {
+        window.open(buildUrl(la, ln), "_blank", "noopener,noreferrer");
+      }
+      closeNavPicker();
+    }
+    if (appleBtn) {
+      appleBtn.onclick = function () {
+        openChosen(appleDirectionsUrl);
+      };
+    }
+    if (googleBtn) {
+      googleBtn.onclick = function () {
+        openChosen(googleDirectionsUrl);
+      };
+    }
+    if (cancelBtn) {
+      cancelBtn.onclick = closeNavPicker;
+    }
+    if (backdrop) {
+      backdrop.onclick = closeNavPicker;
+    }
+  }
+
   function wireQuickNav(places) {
     const byId = {};
     for (const p of places) {
@@ -137,7 +192,7 @@
       const la = Number(p.lat);
       const ln = Number(p.lng);
       if (!Number.isFinite(la) || !Number.isFinite(ln)) return;
-      window.open(appleDirectionsUrl(la, ln), "_blank", "noopener,noreferrer");
+      openNavPicker(la, ln);
     }
     if (btnL) {
       btnL.onclick = function () {
@@ -207,35 +262,24 @@
   }
 
   document.getElementById("btn-locate").addEventListener("click", locateMe);
+  wireNavPicker();
 
-  function applyPlacesData(data, status, sourceLabel) {
+  function applyPlacesData(data) {
     const places = Array.isArray(data.places) ? data.places : [];
-    const missing = places.filter(
-      (p) =>
-        !Number.isFinite(Number(p.lat)) || !Number.isFinite(Number(p.lng))
-    );
     addPlaceMarkers(places);
     wireQuickNav(places);
     setTimeout(function () {
       map.invalidateSize();
     }, 0);
-    let msg = `已加载 ${places.length} 个地点${sourceLabel ? "（" + sourceLabel + "）" : ""}。`;
-    if (missing.length) {
-      msg += ` 其中 ${missing.length} 条缺坐标，可运行 python3 scripts/geocode_places.py。`;
-    }
-    status.textContent = msg;
   }
 
   async function loadPlaces() {
-    const status = document.getElementById("load-status");
     let data = null;
-    let sourceLabel = "";
 
     try {
       const res = await fetch("data/places.json", { cache: "no-store" });
       if (res.ok) {
         data = await res.json();
-        sourceLabel = "places.json";
       }
     } catch (_) {}
 
@@ -245,16 +289,16 @@
       Array.isArray(window.__PLACES_EMBED__.places)
     ) {
       data = window.__PLACES_EMBED__;
-      sourceLabel = "内嵌数据";
     }
 
     if (!data) {
-      status.textContent =
-        "无法加载地点：请用 http(s) 打开本页，或运行 python3 scripts/embed_places.py 生成 embedded-places.js。";
+      alert(
+        "无法加载地点数据。请用 https 打开本页，或运行 python3 scripts/embed_places.py 后重新部署。"
+      );
       return;
     }
 
-    applyPlacesData(data, status, sourceLabel);
+    applyPlacesData(data);
   }
 
   window.addEventListener("orientationchange", function () {

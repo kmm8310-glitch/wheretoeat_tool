@@ -22,8 +22,6 @@
   </head>
   <body>
     <div id="toolbar">
-      <h1>San Diego 之旅</h1>
-      <p id="load-status">正在加载…</p>
       <button type="button" id="btn-locate" class="btn-primary">定位到我</button>
       <details id="help-details" class="help-details">
         <summary>iPhone / 离线 / 部署说明</summary>
@@ -57,6 +55,27 @@
       <button type="button" id="btn-nav-airbnb" class="quick-nav-btn">
         Airbnb
       </button>
+    </div>
+    <div
+      id="nav-picker"
+      class="nav-picker hidden"
+      aria-hidden="true"
+      role="dialog"
+      aria-labelledby="nav-picker-title"
+    >
+      <div class="nav-picker-backdrop" aria-hidden="true"></div>
+      <div class="nav-picker-panel">
+        <p id="nav-picker-title" class="nav-picker-title">选择导航应用</p>
+        <button type="button" id="nav-picker-apple" class="nav-picker-choice">
+          Apple 地图
+        </button>
+        <button type="button" id="nav-picker-google" class="nav-picker-choice">
+          Google 地图
+        </button>
+        <button type="button" id="nav-picker-cancel" class="nav-picker-cancel">
+          取消
+        </button>
+      </div>
     </div>
     <div id="map"></div>
     <script src="embedded-places.js"></script>
