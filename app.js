@@ -127,57 +127,6 @@
     );
   }
 
-  function openNavPicker(lat, lng) {
-    const root = document.getElementById("nav-picker");
-    if (!root) return;
-    root.dataset.lat = String(lat);
-    root.dataset.lng = String(lng);
-    root.classList.remove("hidden");
-    root.setAttribute("aria-hidden", "false");
-  }
-
-  function closeNavPicker() {
-    const root = document.getElementById("nav-picker");
-    if (!root) return;
-    root.classList.add("hidden");
-    root.setAttribute("aria-hidden", "true");
-    delete root.dataset.lat;
-    delete root.dataset.lng;
-  }
-
-  function wireNavPicker() {
-    const root = document.getElementById("nav-picker");
-    if (!root) return;
-    const appleBtn = document.getElementById("nav-picker-apple");
-    const googleBtn = document.getElementById("nav-picker-google");
-    const cancelBtn = document.getElementById("nav-picker-cancel");
-    const backdrop = root.querySelector(".nav-picker-backdrop");
-    function openChosen(buildUrl) {
-      const la = parseFloat(root.dataset.lat || "", 10);
-      const ln = parseFloat(root.dataset.lng || "", 10);
-      if (Number.isFinite(la) && Number.isFinite(ln)) {
-        window.open(buildUrl(la, ln), "_blank", "noopener,noreferrer");
-      }
-      closeNavPicker();
-    }
-    if (appleBtn) {
-      appleBtn.onclick = function () {
-        openChosen(appleDirectionsUrl);
-      };
-    }
-    if (googleBtn) {
-      googleBtn.onclick = function () {
-        openChosen(googleDirectionsUrl);
-      };
-    }
-    if (cancelBtn) {
-      cancelBtn.onclick = closeNavPicker;
-    }
-    if (backdrop) {
-      backdrop.onclick = closeNavPicker;
-    }
-  }
-
   function wireQuickNav(places) {
     const byId = {};
     for (const p of places) {
@@ -192,7 +141,11 @@
       const la = Number(p.lat);
       const ln = Number(p.lng);
       if (!Number.isFinite(la) || !Number.isFinite(ln)) return;
-      openNavPicker(la, ln);
+      window.open(
+        googleDirectionsUrl(la, ln),
+        "_blank",
+        "noopener,noreferrer"
+      );
     }
     if (btnL) {
       btnL.onclick = function () {
@@ -262,7 +215,6 @@
   }
 
   document.getElementById("btn-locate").addEventListener("click", locateMe);
-  wireNavPicker();
 
   function applyPlacesData(data) {
     const places = Array.isArray(data.places) ? data.places : [];
