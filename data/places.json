@@ -231,6 +231,26 @@
       "lat": 36.08949,
       "lng": -120.11357,
       "cover": ""
+    },
+    {
+      "id": "stay-airbnb-blue-lake",
+      "title": "Airbnb",
+      "url": "",
+      "no_yelp": true,
+      "query": "8715 Blue Lake Drive, San Diego, CA 92119",
+      "lat": 32.791526,
+      "lng": -117.010107,
+      "cover": ""
+    },
+    {
+      "id": "attr-legoland-ca",
+      "title": "LEGOLAND® California Resort",
+      "url": "https://www.yelp.com/search?find_desc=LEGOLAND+California+Resort&find_loc=Carlsbad%2C+CA",
+      "yelp_loc": "Carlsbad, CA",
+      "query": "One Legoland Dr, Carlsbad, CA 92008",
+      "lat": 33.132571,
+      "lng": -117.316608,
+      "cover": ""
     }
   ]
 }

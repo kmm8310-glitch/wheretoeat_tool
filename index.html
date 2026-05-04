@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <title>San Diego 收藏地图</title>
+    <title>San Diego 之旅</title>
     <link rel="manifest" href="manifest.json" />
     <link
       rel="stylesheet"
@@ -22,7 +22,7 @@
   </head>
   <body>
     <div id="toolbar">
-      <h1>San Diego 美食地图</h1>
+      <h1>San Diego 之旅</h1>
       <p id="load-status">正在加载…</p>
       <button type="button" id="btn-locate" class="btn-primary">定位到我</button>
       <details id="help-details" class="help-details">
@@ -49,6 +49,14 @@
           </p>
         </div>
       </details>
+    </div>
+    <div id="quick-nav" class="quick-nav" aria-label="快速导航">
+      <button type="button" id="btn-nav-legoland" class="quick-nav-btn">
+        LEGOLAND
+      </button>
+      <button type="button" id="btn-nav-airbnb" class="quick-nav-btn">
+        Airbnb
+      </button>
     </div>
     <div id="map"></div>
     <script src="embedded-places.js"></script>

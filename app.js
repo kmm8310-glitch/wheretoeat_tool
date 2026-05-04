@@ -21,6 +21,10 @@
     return div.innerHTML;
   }
 
+  function appleDirectionsUrl(lat, lng) {
+    return `https://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+  }
+
   function yelpSearchUrl(findDesc, findLoc) {
     const p = new URLSearchParams();
     p.set("find_desc", findDesc);
@@ -32,6 +36,7 @@
   function resolvePlaceUrl(place) {
     const raw = (place.url || "").trim();
     if (raw) return raw;
+    if (place.no_yelp) return "";
     let q = (place.query || place.title || "").trim();
     if (!q) return "";
     q = q.replace(/^#\d+\s*/, "").trim();
@@ -56,7 +61,7 @@
     const label = encodeURIComponent(
       (place.title || place.query || "目的地").slice(0, 120)
     );
-    const apple = `https://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+    const apple = appleDirectionsUrl(lat, lng);
     const google = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
     const gName = `https://www.google.com/maps/dir/?api=1&destination=${label}&travelmode=driving`;
     return (
@@ -80,7 +85,6 @@
   function popupHtml(place) {
     const title = escapeHtml(place.title || "未命名");
     const url = resolvePlaceUrl(place);
-    const query = place.query ? escapeHtml(place.query) : "";
     const lat = Number(place.lat);
     const lng = Number(place.lng);
     const cover =
@@ -100,13 +104,51 @@
 
     const nav = navigationLinksHtml(place, lat, lng);
 
+    const addressLink =
+      place.query &&
+      Number.isFinite(lat) &&
+      Number.isFinite(lng) &&
+      `<div class="popup-meta"><a class="popup-address-link" href="${escapeHtml(
+        appleDirectionsUrl(lat, lng)
+      )}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+        String(place.query).trim()
+      )}</a></div>`;
+
     return (
       `${cover}` +
       `<div class="popup-title">${title}</div>` +
-      (query ? `<div class="popup-meta">${query}</div>` : "") +
+      (addressLink || "") +
       nav +
       (link ? `<div class="popup-link-row">${link}</div>` : "")
     );
+  }
+
+  function wireQuickNav(places) {
+    const byId = {};
+    for (const p of places) {
+      if (p && p.id) byId[p.id] = p;
+    }
+    const leg = byId["attr-legoland-ca"];
+    const air = byId["stay-airbnb-blue-lake"];
+    const btnL = document.getElementById("btn-nav-legoland");
+    const btnA = document.getElementById("btn-nav-airbnb");
+    function go(p) {
+      if (!p) return;
+      const la = Number(p.lat);
+      const ln = Number(p.lng);
+      if (!Number.isFinite(la) || !Number.isFinite(ln)) return;
+      window.open(appleDirectionsUrl(la, ln), "_blank", "noopener,noreferrer");
+    }
+    if (btnL) {
+      btnL.onclick = function () {
+        go(leg);
+      };
+    }
+    if (btnA) {
+      btnA.onclick = function () {
+        go(air);
+      };
+    }
   }
 
   function addPlaceMarkers(places) {
@@ -173,6 +215,7 @@
         !Number.isFinite(Number(p.lat)) || !Number.isFinite(Number(p.lng))
     );
     addPlaceMarkers(places);
+    wireQuickNav(places);
     setTimeout(function () {
       map.invalidateSize();
     }, 0);
