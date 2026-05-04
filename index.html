@@ -51,12 +51,20 @@
       <button type="button" id="btn-locate" class="quick-nav-btn btn-primary">
         定位到我
       </button>
-      <button type="button" id="btn-nav-legoland" class="quick-nav-btn">
-        LEGOLAND
-      </button>
-      <button type="button" id="btn-nav-airbnb" class="quick-nav-btn">
-        Airbnb
-      </button>
+      <a
+        id="btn-nav-legoland"
+        class="quick-nav-btn quick-nav-external"
+        href="https://www.google.com/maps/dir/?api=1&amp;destination=33.132571,-117.316608&amp;travelmode=driving"
+        target="_blank"
+        rel="noopener noreferrer"
+        >LEGOLAND</a>
+      <a
+        id="btn-nav-airbnb"
+        class="quick-nav-btn quick-nav-external"
+        href="https://www.google.com/maps/dir/?api=1&amp;destination=32.791526,-117.010107&amp;travelmode=driving"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Airbnb</a>
     </div>
     <div id="map"></div>
     <script src="embedded-places.js"></script>

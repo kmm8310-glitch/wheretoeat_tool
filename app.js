@@ -134,29 +134,17 @@
     }
     const leg = byId["attr-legoland-ca"];
     const air = byId["stay-airbnb-blue-lake"];
-    const btnL = document.getElementById("btn-nav-legoland");
-    const btnA = document.getElementById("btn-nav-airbnb");
-    function go(p) {
-      if (!p) return;
+    const elL = document.getElementById("btn-nav-legoland");
+    const elA = document.getElementById("btn-nav-airbnb");
+    function setGoogleNavLink(el, p) {
+      if (!el || !p) return;
       const la = Number(p.lat);
       const ln = Number(p.lng);
       if (!Number.isFinite(la) || !Number.isFinite(ln)) return;
-      window.open(
-        googleDirectionsUrl(la, ln),
-        "_blank",
-        "noopener,noreferrer"
-      );
+      el.href = googleDirectionsUrl(la, ln);
     }
-    if (btnL) {
-      btnL.onclick = function () {
-        go(leg);
-      };
-    }
-    if (btnA) {
-      btnA.onclick = function () {
-        go(air);
-      };
-    }
+    setGoogleNavLink(elL, leg);
+    setGoogleNavLink(elA, air);
   }
 
   function addPlaceMarkers(places) {
