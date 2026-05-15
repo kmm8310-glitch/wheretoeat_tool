@@ -32,11 +32,8 @@
           </p>
           <p>
             <strong>内网电脑 + 手机</strong>：电脑在项目目录运行
-            <code>python3 scripts/serve_admin.py --host 0.0.0.0 --port 8765</code>，手机连同一 Wi‑Fi，浏览器打开
+            <code>python3 -m http.server 8765</code>，手机连同一 Wi‑Fi，浏览器打开
             <code>http://电脑IP:8765</code>（不要用仅 file:// 打开，地图数据可能加载失败）。
-          </p>
-          <p>
-            <strong>删除地点</strong>：需要通过上面的本地管理服务打开网页；普通静态部署只能浏览，不能直接写入仓库文件。
           </p>
           <p>
             <strong>离线数据</strong>：修改 <code>data/places.json</code> 后在本机执行

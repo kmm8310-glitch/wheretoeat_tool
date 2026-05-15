@@ -14,16 +14,11 @@
 
   const markersLayer = L.layerGroup().addTo(map);
   let userMarker = null;
-  let allPlaces = [];
 
   function escapeHtml(s) {
     const div = document.createElement("div");
     div.textContent = s;
     return div.innerHTML;
-  }
-
-  function escapeAttr(s) {
-    return escapeHtml(String(s)).replace(/"/g, "&quot;");
   }
 
   function appleDirectionsUrl(lat, lng) {
@@ -96,7 +91,6 @@
     const url = resolvePlaceUrl(place);
     const lat = Number(place.lat);
     const lng = Number(place.lng);
-    const placeId = place.id ? String(place.id) : "";
     const cover =
       place.cover && String(place.cover).trim()
         ? `<img class="popup-cover" src="${escapeHtml(
@@ -129,14 +123,7 @@
       `<div class="popup-title">${title}</div>` +
       (addressLink || "") +
       nav +
-      (link ? `<div class="popup-link-row">${link}</div>` : "") +
-      (placeId
-        ? `<div class="popup-actions"><button type="button" class="popup-delete-btn" data-place-id="${escapeAttr(
-            placeId
-          )}" data-place-title="${escapeAttr(
-            place.title || "这个地点"
-          )}">从文件删除此地点</button></div>`
-        : "")
+      (link ? `<div class="popup-link-row">${link}</div>` : "")
     );
   }
 
@@ -150,27 +137,14 @@
     const elL = document.getElementById("btn-nav-legoland");
     const elA = document.getElementById("btn-nav-airbnb");
     function setGoogleNavLink(el, p) {
-      if (!el) return;
-      if (!p) {
-        el.hidden = true;
-        return;
-      }
+      if (!el || !p) return;
       const la = Number(p.lat);
       const ln = Number(p.lng);
-      if (!Number.isFinite(la) || !Number.isFinite(ln)) {
-        el.hidden = true;
-        return;
-      }
+      if (!Number.isFinite(la) || !Number.isFinite(ln)) return;
       el.href = googleDirectionsUrl(la, ln);
-      el.hidden = false;
     }
     setGoogleNavLink(elL, leg);
     setGoogleNavLink(elA, air);
-  }
-
-  function renderPlaces() {
-    addPlaceMarkers(allPlaces);
-    wireQuickNav(allPlaces);
   }
 
   function addPlaceMarkers(places) {
@@ -191,45 +165,6 @@
     if (bounds.length) {
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
     }
-  }
-
-  async function deletePlace(placeId, title) {
-    if (!placeId) return;
-    const label = title || "这个地点";
-    if (
-      !confirm(
-        `确定要从 data/places.json 删除「${label}」吗？删除后会同步更新 embedded-places.js。`
-      )
-    ) {
-      return;
-    }
-
-    let result;
-    try {
-      const res = await fetch("api/places/delete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: placeId }),
-      });
-      result = await res.json().catch(function () {
-        return {};
-      });
-      if (!res.ok || !result.ok) {
-        throw new Error(result.error || `HTTP ${res.status}`);
-      }
-    } catch (err) {
-      alert(
-        "无法写入地点文件。请用 python3 scripts/serve_admin.py 启动本地管理服务后再删除。\n\n" +
-          (err && err.message ? err.message : String(err))
-      );
-      return;
-    }
-
-    allPlaces = allPlaces.filter(function (p) {
-      return !p.id || String(p.id) !== String(placeId);
-    });
-    map.closePopup();
-    renderPlaces();
   }
 
   function setUserLocation(lat, lng) {
@@ -268,16 +203,11 @@
   }
 
   document.getElementById("btn-locate").addEventListener("click", locateMe);
-  document.addEventListener("click", function (event) {
-    if (!event.target || !event.target.closest) return;
-    const btn = event.target.closest(".popup-delete-btn");
-    if (!btn) return;
-    deletePlace(btn.dataset.placeId, btn.dataset.placeTitle);
-  });
 
   function applyPlacesData(data) {
-    allPlaces = Array.isArray(data.places) ? data.places : [];
-    renderPlaces();
+    const places = Array.isArray(data.places) ? data.places : [];
+    addPlaceMarkers(places);
+    wireQuickNav(places);
     setTimeout(function () {
       map.invalidateSize();
     }, 0);
