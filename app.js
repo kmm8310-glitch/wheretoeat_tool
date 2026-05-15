@@ -14,37 +14,11 @@
 
   const markersLayer = L.layerGroup().addTo(map);
   let userMarker = null;
-  const DELETED_PLACES_KEY = "wheretoeat.deletedPlaceIds";
-  let allPlaces = [];
-  let deletedPlaceIds = loadDeletedPlaceIds();
 
   function escapeHtml(s) {
     const div = document.createElement("div");
     div.textContent = s;
     return div.innerHTML;
-  }
-
-  function escapeAttr(s) {
-    return escapeHtml(String(s)).replace(/"/g, "&quot;");
-  }
-
-  function loadDeletedPlaceIds() {
-    try {
-      const raw = localStorage.getItem(DELETED_PLACES_KEY);
-      const ids = JSON.parse(raw || "[]");
-      return new Set(Array.isArray(ids) ? ids.filter(Boolean).map(String) : []);
-    } catch (_) {
-      return new Set();
-    }
-  }
-
-  function saveDeletedPlaceIds() {
-    try {
-      localStorage.setItem(
-        DELETED_PLACES_KEY,
-        JSON.stringify(Array.from(deletedPlaceIds))
-      );
-    } catch (_) {}
   }
 
   function appleDirectionsUrl(lat, lng) {
@@ -117,7 +91,6 @@
     const url = resolvePlaceUrl(place);
     const lat = Number(place.lat);
     const lng = Number(place.lng);
-    const placeId = place.id ? String(place.id) : "";
     const cover =
       place.cover && String(place.cover).trim()
         ? `<img class="popup-cover" src="${escapeHtml(
@@ -150,14 +123,7 @@
       `<div class="popup-title">${title}</div>` +
       (addressLink || "") +
       nav +
-      (link ? `<div class="popup-link-row">${link}</div>` : "") +
-      (placeId
-        ? `<div class="popup-actions"><button type="button" class="popup-delete-btn" data-place-id="${escapeAttr(
-            placeId
-          )}" data-place-title="${escapeAttr(
-            place.title || "这个地点"
-          )}">删除此地点</button></div>`
-        : "")
+      (link ? `<div class="popup-link-row">${link}</div>` : "")
     );
   }
 
@@ -171,40 +137,14 @@
     const elL = document.getElementById("btn-nav-legoland");
     const elA = document.getElementById("btn-nav-airbnb");
     function setGoogleNavLink(el, p) {
-      if (!el) return;
-      if (!p) {
-        el.hidden = true;
-        return;
-      }
+      if (!el || !p) return;
       const la = Number(p.lat);
       const ln = Number(p.lng);
-      if (!Number.isFinite(la) || !Number.isFinite(ln)) {
-        el.hidden = true;
-        return;
-      }
+      if (!Number.isFinite(la) || !Number.isFinite(ln)) return;
       el.href = googleDirectionsUrl(la, ln);
-      el.hidden = false;
     }
     setGoogleNavLink(elL, leg);
     setGoogleNavLink(elA, air);
-  }
-
-  function visiblePlaces() {
-    return allPlaces.filter(function (p) {
-      return !p.id || !deletedPlaceIds.has(String(p.id));
-    });
-  }
-
-  function updateRestoreButton() {
-    const btn = document.getElementById("btn-restore-places");
-    if (btn) btn.hidden = deletedPlaceIds.size === 0;
-  }
-
-  function renderPlaces() {
-    const places = visiblePlaces();
-    addPlaceMarkers(places);
-    wireQuickNav(places);
-    updateRestoreButton();
   }
 
   function addPlaceMarkers(places) {
@@ -225,25 +165,6 @@
     if (bounds.length) {
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
     }
-  }
-
-  function deletePlace(placeId, title) {
-    if (!placeId) return;
-    const label = title || "这个地点";
-    if (!confirm(`确定要删除「${label}」吗？此操作只会影响当前浏览器。`)) {
-      return;
-    }
-    deletedPlaceIds.add(String(placeId));
-    saveDeletedPlaceIds();
-    map.closePopup();
-    renderPlaces();
-  }
-
-  function restoreDeletedPlaces() {
-    if (deletedPlaceIds.size === 0) return;
-    deletedPlaceIds = new Set();
-    saveDeletedPlaceIds();
-    renderPlaces();
   }
 
   function setUserLocation(lat, lng) {
@@ -282,19 +203,11 @@
   }
 
   document.getElementById("btn-locate").addEventListener("click", locateMe);
-  document
-    .getElementById("btn-restore-places")
-    .addEventListener("click", restoreDeletedPlaces);
-  document.addEventListener("click", function (event) {
-    if (!event.target || !event.target.closest) return;
-    const btn = event.target.closest(".popup-delete-btn");
-    if (!btn) return;
-    deletePlace(btn.dataset.placeId, btn.dataset.placeTitle);
-  });
 
   function applyPlacesData(data) {
-    allPlaces = Array.isArray(data.places) ? data.places : [];
-    renderPlaces();
+    const places = Array.isArray(data.places) ? data.places : [];
+    addPlaceMarkers(places);
+    wireQuickNav(places);
     setTimeout(function () {
       map.invalidateSize();
     }, 0);
