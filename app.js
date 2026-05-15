@@ -286,6 +286,7 @@
     .getElementById("btn-restore-places")
     .addEventListener("click", restoreDeletedPlaces);
   document.addEventListener("click", function (event) {
+    if (!event.target || !event.target.closest) return;
     const btn = event.target.closest(".popup-delete-btn");
     if (!btn) return;
     deletePlace(btn.dataset.placeId, btn.dataset.placeTitle);
