@@ -14,9 +14,7 @@
 
   const markersLayer = L.layerGroup().addTo(map);
   let userMarker = null;
-  const DELETED_PLACES_KEY = "wheretoeat.deletedPlaceIds";
   let allPlaces = [];
-  let deletedPlaceIds = loadDeletedPlaceIds();
 
   function escapeHtml(s) {
     const div = document.createElement("div");
@@ -26,25 +24,6 @@
 
   function escapeAttr(s) {
     return escapeHtml(String(s)).replace(/"/g, "&quot;");
-  }
-
-  function loadDeletedPlaceIds() {
-    try {
-      const raw = localStorage.getItem(DELETED_PLACES_KEY);
-      const ids = JSON.parse(raw || "[]");
-      return new Set(Array.isArray(ids) ? ids.filter(Boolean).map(String) : []);
-    } catch (_) {
-      return new Set();
-    }
-  }
-
-  function saveDeletedPlaceIds() {
-    try {
-      localStorage.setItem(
-        DELETED_PLACES_KEY,
-        JSON.stringify(Array.from(deletedPlaceIds))
-      );
-    } catch (_) {}
   }
 
   function appleDirectionsUrl(lat, lng) {
@@ -156,7 +135,7 @@
             placeId
           )}" data-place-title="${escapeAttr(
             place.title || "这个地点"
-          )}">删除此地点</button></div>`
+          )}">从文件删除此地点</button></div>`
         : "")
     );
   }
@@ -189,22 +168,9 @@
     setGoogleNavLink(elA, air);
   }
 
-  function visiblePlaces() {
-    return allPlaces.filter(function (p) {
-      return !p.id || !deletedPlaceIds.has(String(p.id));
-    });
-  }
-
-  function updateRestoreButton() {
-    const btn = document.getElementById("btn-restore-places");
-    if (btn) btn.hidden = deletedPlaceIds.size === 0;
-  }
-
   function renderPlaces() {
-    const places = visiblePlaces();
-    addPlaceMarkers(places);
-    wireQuickNav(places);
-    updateRestoreButton();
+    addPlaceMarkers(allPlaces);
+    wireQuickNav(allPlaces);
   }
 
   function addPlaceMarkers(places) {
@@ -227,22 +193,42 @@
     }
   }
 
-  function deletePlace(placeId, title) {
+  async function deletePlace(placeId, title) {
     if (!placeId) return;
     const label = title || "这个地点";
-    if (!confirm(`确定要删除「${label}」吗？此操作只会影响当前浏览器。`)) {
+    if (
+      !confirm(
+        `确定要从 data/places.json 删除「${label}」吗？删除后会同步更新 embedded-places.js。`
+      )
+    ) {
       return;
     }
-    deletedPlaceIds.add(String(placeId));
-    saveDeletedPlaceIds();
-    map.closePopup();
-    renderPlaces();
-  }
 
-  function restoreDeletedPlaces() {
-    if (deletedPlaceIds.size === 0) return;
-    deletedPlaceIds = new Set();
-    saveDeletedPlaceIds();
+    let result;
+    try {
+      const res = await fetch("api/places/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: placeId }),
+      });
+      result = await res.json().catch(function () {
+        return {};
+      });
+      if (!res.ok || !result.ok) {
+        throw new Error(result.error || `HTTP ${res.status}`);
+      }
+    } catch (err) {
+      alert(
+        "无法写入地点文件。请用 python3 scripts/serve_admin.py 启动本地管理服务后再删除。\n\n" +
+          (err && err.message ? err.message : String(err))
+      );
+      return;
+    }
+
+    allPlaces = allPlaces.filter(function (p) {
+      return !p.id || String(p.id) !== String(placeId);
+    });
+    map.closePopup();
     renderPlaces();
   }
 
@@ -282,9 +268,6 @@
   }
 
   document.getElementById("btn-locate").addEventListener("click", locateMe);
-  document
-    .getElementById("btn-restore-places")
-    .addEventListener("click", restoreDeletedPlaces);
   document.addEventListener("click", function (event) {
     if (!event.target || !event.target.closest) return;
     const btn = event.target.closest(".popup-delete-btn");
