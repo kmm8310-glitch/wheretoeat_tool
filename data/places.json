@@ -193,17 +193,8 @@
       "cover": ""
     },
     {
-      "id": "fav-artifact-at-mingei",
-      "title": "ARTIFACT at Mingei",
-      "url": "https://www.yelp.com/search?find_desc=ARTIFACT+at+Mingei&find_loc=San+Diego%2C+CA",
-      "query": "1439 El Prado, San Diego, CA 92101",
-      "lat": 32.731125,
-      "lng": -117.151014,
-      "cover": ""
-    },
-    {
       "id": "hwy-bravo-farms-kettleman",
-      "title": "Bravo Farms（Kettleman City）",
+      "title": "Bravo Farms（In & Out）",
       "url": "https://www.yelp.com/search?find_desc=Bravo+Farms&find_loc=Kettleman+City%2C+CA",
       "yelp_loc": "Kettleman City, CA",
       "query": "33341 Bernard Dr, Kettleman City, CA 93239",
@@ -219,26 +210,6 @@
       "query": "5701 Outlets at Tejon Pkwy, Tejon Ranch, CA 93203",
       "lat": 34.985613,
       "lng": -118.941635,
-      "cover": ""
-    },
-    {
-      "id": "hwy-vista-del-lago-visitor",
-      "title": "Vista del Lago Visitor Center",
-      "url": "https://www.yelp.com/search?find_desc=Vista+del+Lago+Visitor+Center&find_loc=Gorman%2C+CA",
-      "yelp_loc": "Gorman, CA",
-      "query": "38500 Vista Del Lago Rd, Gorman, CA 93243",
-      "lat": 34.6622,
-      "lng": -118.7611,
-      "cover": ""
-    },
-    {
-      "id": "hwy-coalinga-avenal-rest",
-      "title": "Coalinga / Avenal Rest Area（I-5 北向）",
-      "url": "https://www.yelp.com/biz/coalinga-avenal-safety-roadside-rest-area-huron",
-      "yelp_loc": "Huron, CA",
-      "query": "Coalinga Avenal Safety Roadside Rest Area Northbound, I-5 near Huron, CA",
-      "lat": 36.08949,
-      "lng": -120.11357,
       "cover": ""
     },
     {
