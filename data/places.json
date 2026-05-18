@@ -203,16 +203,6 @@
       "cover": ""
     },
     {
-      "id": "hwy-in-n-out-kettleman",
-      "title": "In-N-Out Burger（Kettleman City）",
-      "url": "https://www.yelp.com/biz/in-n-out-burger-kettleman-city",
-      "yelp_loc": "Kettleman City, CA",
-      "query": "33464 Bernard Dr, Kettleman City, CA 93239",
-      "lat": 35.986161,
-      "lng": -119.959236,
-      "cover": ""
-    },
-    {
       "id": "hwy-outlets-tejon",
       "title": "Outlets at Tejon（Tejon Ranch）",
       "url": "https://www.yelp.com/search?find_desc=Outlets+at+Tejon&find_loc=Arvin%2C+CA",
