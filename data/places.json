@@ -213,16 +213,6 @@
       "cover": ""
     },
     {
-      "id": "hwy-vista-del-lago-visitor",
-      "title": "Vista del Lago Visitor Center",
-      "url": "https://www.yelp.com/search?find_desc=Vista+del+Lago+Visitor+Center&find_loc=Gorman%2C+CA",
-      "yelp_loc": "Gorman, CA",
-      "query": "38500 Vista Del Lago Rd, Gorman, CA 93243",
-      "lat": 34.6622,
-      "lng": -118.7611,
-      "cover": ""
-    },
-    {
       "id": "stay-airbnb-blue-lake",
       "title": "Airbnb",
       "url": "",
