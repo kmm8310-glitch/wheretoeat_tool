@@ -193,15 +193,6 @@
       "cover": ""
     },
     {
-      "id": "fav-artifact-at-mingei",
-      "title": "ARTIFACT at Mingei",
-      "url": "https://www.yelp.com/search?find_desc=ARTIFACT+at+Mingei&find_loc=San+Diego%2C+CA",
-      "query": "1439 El Prado, San Diego, CA 92101",
-      "lat": 32.731125,
-      "lng": -117.151014,
-      "cover": ""
-    },
-    {
       "id": "hwy-bravo-farms-kettleman",
       "title": "Bravo Farms（In & Out）",
       "url": "https://www.yelp.com/search?find_desc=Bravo+Farms&find_loc=Kettleman+City%2C+CA",
