@@ -19,11 +19,11 @@
   const PARK_MAP_BY_PLACE_ID = {
     "attr-legoland-ca": {
       label: "乐高园内地图",
-      url: "https://www.legoland.com/california/plan-your-visit/planning-tools/park-map/",
+      url: "https://www.legoland.com/california/media/leymiqdu/legoland-california-park-map.pdf",
     },
     "attr-sd-zoo": {
       label: "动物园院内地图",
-      url: "https://zoo.sandiegozoo.org/visitor-info/zoo-map/",
+      url: "https://zoo.sandiegozoo.org/sites/default/files/2026-01/01-05-26_Zoo%20Map_web.pdf",
     },
   };
   let allPlaces = [];
