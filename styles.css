@@ -154,6 +154,35 @@ a.quick-nav-btn {
   background: #eff6ff;
 }
 
+.quick-nav-map {
+  border-color: #047857;
+  color: #047857;
+}
+
+.quick-nav-map:hover {
+  background: #ecfdf5;
+}
+
+.popup-park-map {
+  margin-top: 8px;
+}
+
+.popup-park-map-link {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid #047857;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.popup-park-map-link:hover {
+  background: #d1fae5;
+}
+
 #map {
   height: 100%;
   width: 100%;
