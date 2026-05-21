@@ -15,6 +15,17 @@
   const markersLayer = L.layerGroup().addTo(map);
   let userMarker = null;
   const DELETED_PLACES_KEY = "wheretoeat.deletedPlaceIds";
+
+  const PARK_MAP_BY_PLACE_ID = {
+    "attr-legoland-ca": {
+      label: "乐高园内地图",
+      url: "https://www.legoland.com/california/plan-your-visit/planning-tools/park-map/",
+    },
+    "attr-sd-zoo": {
+      label: "动物园院内地图",
+      url: "https://zoo.sandiegozoo.org/visitor-info/zoo-map/",
+    },
+  };
   let allPlaces = [];
   let deletedPlaceIds = loadDeletedPlaceIds();
 
@@ -86,6 +97,20 @@
     return "打开链接";
   }
 
+  function parkMapLinkHtml(place) {
+    const entry = place.id ? PARK_MAP_BY_PLACE_ID[String(place.id)] : null;
+    if (!entry || !entry.url) return "";
+    return (
+      `<div class="popup-park-map">` +
+      `<a class="popup-park-map-link" href="${escapeHtml(
+        entry.url
+      )}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+        entry.label
+      )}</a>` +
+      `</div>`
+    );
+  }
+
   function navigationLinksHtml(place, lat, lng) {
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return "";
     const label = encodeURIComponent(
@@ -134,6 +159,7 @@
       )}</a>`;
 
     const nav = navigationLinksHtml(place, lat, lng);
+    const parkMap = parkMapLinkHtml(place);
 
     const addressLink =
       place.query &&
@@ -149,6 +175,7 @@
       `${cover}` +
       `<div class="popup-title">${title}</div>` +
       (addressLink || "") +
+      parkMap +
       nav +
       (link ? `<div class="popup-link-row">${link}</div>` : "") +
       (placeId
