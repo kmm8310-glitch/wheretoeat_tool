@@ -168,8 +168,10 @@
     }
     const leg = byId["attr-legoland-ca"];
     const air = byId["stay-airbnb-blue-lake"];
+    const zoo = byId["attr-sd-zoo"];
     const elL = document.getElementById("btn-nav-legoland");
     const elA = document.getElementById("btn-nav-airbnb");
+    const elZ = document.getElementById("btn-nav-sd-zoo");
     function setGoogleNavLink(el, p) {
       if (!el) return;
       if (!p) {
@@ -187,6 +189,7 @@
     }
     setGoogleNavLink(elL, leg);
     setGoogleNavLink(elA, air);
+    setGoogleNavLink(elZ, zoo);
   }
 
   function visiblePlaces() {

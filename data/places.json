@@ -223,6 +223,15 @@
       "cover": ""
     },
     {
+      "id": "attr-sd-zoo",
+      "title": "San Diego Zoo",
+      "url": "https://zoo.sandiegozoo.org/",
+      "query": "2920 Zoo Dr, San Diego, CA 92101",
+      "lat": 32.7353,
+      "lng": -117.149,
+      "cover": ""
+    },
+    {
       "id": "attr-legoland-ca",
       "title": "LEGOLAND® California Resort",
       "url": "https://www.yelp.com/search?find_desc=LEGOLAND+California+Resort&find_loc=Carlsbad%2C+CA",
